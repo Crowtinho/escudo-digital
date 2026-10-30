@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escudo Digital | Estadísticas de capturas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#151b19;--side:#202923;--panel:#26312b;--panel2:#2d3931;--line:#405044;--green:#8bd44e;--green2:#3ca66c;--text:#eef6ed;--muted:#aebdb0;--danger:#ff9d98}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,'Segoe UI',Arial,sans-serif;font-size:14px}button{font:inherit;cursor:pointer}button:disabled{opacity:.6;cursor:wait}
+    .shell{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:25px 15px;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px;padding:5px 8px}.emblem{width:37px;height:37px;border:1px solid var(--green);border-radius:10px;display:grid;place-items:center;color:var(--green);font-size:21px}.brand strong{display:block;font-size:15px}.brand small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.section-label{font-size:10px;color:#93a795;letter-spacing:1.5px;text-transform:uppercase;padding:0 12px;margin:0 0 10px}.nav{display:grid;gap:5px}.nav button{border:0;text-align:left;background:transparent;color:#bfcec0;border-radius:8px;padding:12px;display:flex;gap:11px;align-items:center;width:100%}.nav button.active,.nav button:hover{background:#354d38;color:var(--green)}.nav .symbol{font-size:18px;width:23px;text-align:center}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding:17px 10px 0;color:var(--muted);font-size:11px;line-height:1.6}
+    main{min-width:0;padding:28px 30px 36px;max-width:1700px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:22px}.eyebrow{color:var(--green);font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:700}.top h1{font-size:25px;letter-spacing:-.5px;margin:7px 0}.top p{color:var(--muted);margin:0;font-size:12px}.actions{display:flex;gap:10px;align-items:center}.button{border:1px solid #578663;background:#335b3d;color:#eaffdc;padding:11px 16px;border-radius:8px;font-weight:650}.button:hover{background:#417349}.status{margin-bottom:19px;padding:11px 14px;background:#213027;border:1px solid #3c5944;border-radius:8px;color:#b9dbb7;font-size:12px}.status.error{color:var(--danger);border-color:#774c4b;background:#342827}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px;min-width:0}.kpi .label{color:var(--muted);font-size:12px}.kpi .number{font-size:30px;font-weight:750;color:var(--green);margin:13px 0 7px;letter-spacing:-1px}.kpi .sub{font-size:10px;color:#a2b5a6}.dashboard{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}.span4{grid-column:span 4}.span5{grid-column:span 5}.span6{grid-column:span 6}.span7{grid-column:span 7}.span12{grid-column:span 12}.card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:15px}.card-head h2{margin:0;font-size:14px;font-weight:700}.card-head p{color:var(--muted);font-size:11px;margin:5px 0 0}.tag{font-size:10px;border:1px solid #4d7055;color:#b7e5aa;border-radius:5px;padding:5px 8px;white-space:nowrap}.chart{height:265px;position:relative}.chart.tall{height:320px}.empty{color:var(--muted);font-size:12px;text-align:center;padding:22px}.table-wrap{overflow:auto;max-height:330px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:var(--green);background:#303e33;font-size:11px;font-weight:650;position:sticky;top:0}td,th{padding:12px 10px;border-bottom:1px solid #405044}td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}.rank{color:#a8bbaa;width:36px}.bar-track{height:5px;background:#435047;border-radius:10px;overflow:hidden;margin-top:7px}.bar-fill{height:100%;background:var(--green);border-radius:10px}.method{margin-top:14px;color:#a6b8aa;font-size:11px;line-height:1.7;border:1px solid var(--line);border-radius:8px;padding:13px 16px;background:#202a23}.footer{margin-top:18px;font-size:10px;color:#7f9685;text-align:right}
+    @media(max-width:1200px){.span4,.span5,.span6,.span7{grid-column:span 6}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.shell{display:block}.sidebar{padding:12px 16px;gap:10px}.nav{display:flex;overflow:auto}.nav button{width:auto;white-space:nowrap}.section-label,.side-bottom{display:none}main{padding:20px 13px}.top{flex-direction:column}.kpis{gap:9px}.card{padding:13px}.kpi .number{font-size:24px}.span4,.span5,.span6,.span7,.span12{grid-column:span 12}.chart{height:250px}.top h1{font-size:21px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="emblem">⬡</div><div><strong>Escudo Digital</strong><small>Análisis de datos públicos</small></div></div>
+    <div><p class="section-label">Navegación</p><nav class="nav"><button class="active" type="button" data-target="resumen"><span class="symbol">▦</span>Resumen general</button><button type="button" data-target="departamentos"><span class="symbol">▥</span>Departamentos</button><button type="button" data-target="delitos"><span class="symbol">◈</span>Conductas</button><button type="button" data-target="tendencia"><span class="symbol">⌁</span>Tendencia mensual</button><button type="button" data-target="tabla"><span class="symbol">☷</span>Tabla de datos</button></nav></div>
+    <div class="side-bottom">Fuente: Datos Abiertos Colombia<br>Policía Nacional de Colombia<br><span style="color:var(--green)">●</span> Consulta a través de Flask</div>
+  </aside>
+  <main id="resumen">
+    <header class="top"><div><div class="eyebrow">Seguridad y defensa / Estadística pública</div><h1>Dashboard de reportes de capturas</h1><p>Indicadores y análisis de registros publicados por la Policía Nacional de Colombia</p></div><div class="actions"><button class="button" id="refresh" type="button">↻ Actualizar datos</button></div></header>
+    <div id="status" class="status" role="status" aria-live="polite">Preparando consulta…</div>
+    <section class="kpis" aria-label="Indicadores principales">
+      <div class="card kpi"><div class="label">Capturas reportadas en la muestra</div><div class="number" id="total">—</div><div class="sub">Suma del campo cantidad</div></div>
+      <div class="card kpi"><div class="label">Registros procesados</div><div class="number" id="registros">—</div><div class="sub">Filas obtenidas de la API</div></div>
+      <div class="card kpi"><div class="label">Departamentos presentes</div><div class="number" id="departamentos">—</div><div class="sub">Valores distintos en la muestra</div></div>
+      <div class="card kpi"><div class="label">Municipios presentes</div><div class="number" id="municipios">—</div><div class="sub">Valores distintos en la muestra</div></div>
+    </section>
+    <div class="dashboard">
+      <section class="card span6" id="departamentos"><div class="card-head"><div><h2>Capturas por departamento</h2><p>10 departamentos con mayor cantidad en la muestra</p></div><span class="tag">Distribución</span></div><div class="chart"><canvas id="chartDept"></canvas></div><div class="empty" id="emptyDept" hidden>No hay datos de departamentos disponibles.</div></section>
+      <section class="card span6" id="delitos"><div class="card-head"><div><h2>Capturas por conducta delictiva</h2><p>10 conductas con mayor cantidad en la muestra</p></div><span class="tag">Conductas</span></div><div class="chart"><canvas id="chartCrime"></canvas></div><div class="empty" id="emptyCrime" hidden>No hay datos de conductas disponibles.</div></section>
+      <section class="card span7" id="tendencia"><div class="card-head"><div><h2>Evolución mensual</h2><p>Distribución temporal de los registros consultados</p></div><span class="tag">Serie histórica de la muestra</span></div><div class="chart tall"><canvas id="chartMonths"></canvas></div><div class="empty" id="emptyMonths" hidden>No hay fechas válidas disponibles.</div></section>
+      <section class="card span5" id="tabla"><div class="card-head"><div><h2>Ranking de departamentos</h2><p>Cantidad y proporción dentro de la muestra</p></div><span class="tag">Top 10</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Departamento</th><th>Capturas</th></tr></thead><tbody id="ranking"><tr><td colspan="3">Esperando información…</td></tr></tbody></table></div></section>
+    </div>
+    <div class="method"><strong>Nota metodológica:</strong> los resultados corresponden exclusivamente a los registros recuperados por la API (máximo 2.000 en la configuración actual de Python, sin orden temporal garantizado). No representan necesariamente el total nacional ni los eventos más recientes. Los indicadores suman el campo <code>cantidad</code> cuando está disponible. La fecha de actualización en pantalla indica el momento de consulta, no la fecha de publicación de los datos.</div>
+    <div class="footer">Escudo Digital · Visualización de datos públicos · No es un sitio oficial de la Policía Nacional</div>
+  </main>
+</div>
+<script>
+  const charts = {};
+  const fmt = new Intl.NumberFormat('es-CO');
+  const statusEl = document.getElementById('status');
+  const refreshBtn = document.getElementById('refresh');
+  const $ = id => document.getElementById(id);
+  const asArray = value => Array.isArray(value) ? value : [];
+  const valueText = value => Number.isFinite(Number(value)) && value !== null && value !== undefined ? fmt.format(Number(value)) : 'N/D';
+  const axisColor = '#b6c9b7';
+
+  document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    button.classList.add('active');
+    $(button.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+
+  function plot(canvasId, emptyId, rows, type, color, horizontal=false) {
+    if (charts[canvasId]) { charts[canvasId].destroy(); delete charts[canvasId]; }
+    const canvas = $(canvasId);
+    const empty = $(emptyId);
+    if (!rows.length || typeof Chart === 'undefined') {
+      canvas.hidden = true;
+      empty.hidden = false;
+      empty.textContent = typeof Chart === 'undefined' ? 'No se pudo cargar Chart.js. Comprueba tu conexión a Internet.' : 'No hay datos disponibles para esta gráfica.';
+      return;
+    }
+    canvas.hidden = false; empty.hidden = true;
+    charts[canvasId] = new Chart(canvas, {
+      type,
+      data: {labels:rows.map(r=>r.nombre), datasets:[{
+        label:'Capturas reportadas',data:rows.map(r=>Number(r.total)||0),
+        borderColor:color,backgroundColor:type==='line'?'rgba(139,212,78,.14)':color,
+        fill:type==='line',borderWidth:2,borderRadius:type==='bar'?4:0,
+        pointRadius:type==='line'?2:0,tension:.32
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:horizontal?'y':'x',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'Capturas: '+fmt.format(Number(ctx.raw)||0)}}},
+        scales:{x:{grid:{color:'#39483c'},ticks:{color:axisColor,maxRotation:35,autoSkip:true}},
+                y:{beginAtZero:!horizontal,grid:{color:'#39483c'},ticks:{color:axisColor,precision:0}}}}
+    });
+  }
+
+  function fillRanking(rows) {
+    const tbody = $('ranking'); tbody.replaceChildren();
+    if (!rows.length) {
+      const tr=document.createElement('tr'); const td=document.createElement('td');
+      td.colSpan=3; td.textContent='No hay datos disponibles';tr.append(td);tbody.append(tr);return;
+    }
+    const max = Math.max(...rows.map(r=>Number(r.total)||0),1);
+    rows.forEach((r,i)=>{
+      const tr=document.createElement('tr');
+      const rank=document.createElement('td');rank.className='rank';rank.textContent=String(i+1).padStart(2,'0');
+      const name=document.createElement('td');name.textContent=String(r.nombre ?? 'Sin nombre');
+      const track=document.createElement('div');track.className='bar-track';
+      const fill=document.createElement('div');fill.className='bar-fill';fill.style.width=((Number(r.total)||0)/max*100)+'%';track.append(fill);name.append(track);
+      const count=document.createElement('td');count.textContent=valueText(r.total);
+      tr.append(rank,name,count);tbody.append(tr);
+    });
+  }
+
+  async function loadData() {
+    refreshBtn.disabled=true;
+    statusEl.classList.remove('error');
+    statusEl.textContent='Consultando registros en Datos Abiertos Colombia…';
+    try {
+      const response=await fetch('/api/estadisticas',{cache:'no-store'});
+      const contentType=response.headers.get('content-type')||'';
+      if (!contentType.includes('application/json')) {
+        throw new Error(`El servidor devolvió una respuesta no JSON (HTTP ${response.status}). Verifica que main.py esté ejecutándose en el puerto 5000.`);
+      }
+      const data=await response.json();
+      if (!response.ok) throw new Error(data.error||`Error HTTP ${response.status}`);
+      $('total').textContent=valueText(data.total);
+      $('registros').textContent=valueText(data.registros);
+      $('departamentos').textContent=data.campos?.departamento?valueText(data.departamentos):'N/D';
+      $('municipios').textContent=data.campos?.municipio?valueText(data.municipios):'N/D';
+      const depts=asArray(data.por_departamento);
+      plot('chartDept','emptyDept',depts,'bar','#8bd44e',true);
+      plot('chartCrime','emptyCrime',asArray(data.por_delito),'bar','#4fb981',true);
+      plot('chartMonths','emptyMonths',asArray(data.por_mes),'line','#8bd44e');
+      fillRanking(depts);
+      statusEl.textContent=`Consulta completada · ${valueText(data.registros)} registros procesados · ${new Date().toLocaleString('es-CO')}`;
+    } catch(err) {
+      statusEl.classList.add('error');
+      statusEl.textContent='No fue posible cargar los datos: '+err.message;
+      console.error(err);
+    } finally {refreshBtn.disabled=false;}
+  }
+  refreshBtn.addEventListener('click',loadData);
+  document.addEventListener('DOMContentLoaded',loadData);
+</script>
+</body>
+</html>
